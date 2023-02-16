@@ -1,0 +1,9 @@
+{
+  "name": "altium-intlib-parser",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "stackblitz": {
+    "startCommand": "npm start"
+  }
+}
