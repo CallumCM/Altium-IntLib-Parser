@@ -1,0 +1,20 @@
+{
+  "Parameters": {
+    "Availability": "Unavailable",
+    "Comment": "*",
+    "Component Kind": "Standard",
+    "Description": "SMD WI-FI IC, ESP32-S2, SINGAL-C",
+    "Footprint": "QFN40P700X700X90-57T400N",
+    "Library Reference": "ESP32-S2",
+    "MF": "Espressif Systems",
+    "MP": "ESP32-S2",
+    "Package": "None",
+    "Price": "None",
+    "SnapEDA_Link": "https://www.snapeda.com/parts/ESP32-S2/Espressif%20Systems/view-part/4571535/?ref",
+    "Value": "*",
+    "Designator": "ESP32-S2",
+    "Component Type": "Standard",
+    "Pin Count": "57",
+    "Pad Count": "57"
+  }
+}
