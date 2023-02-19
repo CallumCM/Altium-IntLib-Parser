@@ -21,35 +21,57 @@ if (compoundDocumentIdentifier !== "d0cf11e0a1b11ae1") {
 
     let IntLibJSON = {};
 
-    let parameters: object = {};
+    type Parameters = {
+      [key: string]: string;
+    }
 
-    //const stream = doc._rootStorage._dirEntry.streams['Version.Txt'];
-    const stream = doc.stream('Parameters   .bin')
-    stream.on('data', function(chunk) { chunks.push(chunk); });
-    stream.on('error', function(error) { console.error(error); });
+    let parameters: Parameters = {};
+    let pcblib: Parameters = {};
 
-    stream.on('end', function() {
+    const parameterStream = doc.stream('Parameters   .bin')
+    parameterStream.on('data', function(chunk) { chunks.push(chunk); });
+    parameterStream.on('error', function(error) { console.error(error); });
+
+    parameterStream.on('end', function() {
       const buffer = Buffer.concat(chunks);
 
-      // Remove all null bytes
-      const nonNullBuffer = Buffer.from(buffer.filter(byte => byte !== 0));
+      // Remove null bytes from the buffer
+      const cleanBuffer = buffer.filter(byte => byte !== 0);
 
-      parameters = {};
-      nonNullBuffer.toString("utf8").slice(2).split('|').forEach(parameter => {
+      cleanBuffer.toString().slice(2).split('|').forEach(parameter => {
         const parameterDict = parameter.split('=');
         parameters[parameterDict[0]] = parameterDict[1];
       });
 
-      // Remove the trailing "\x16Height" from the Pin Count
-      parameters['Pin Count'] = parameters['Pin Count'].slice(0, -7);
+      if ('Pin Count' in parameters && parameters['Pin Count'].includes("\x16Height")) {
+
+        // Remove the trailing "\x16Height" from the Pin Count
+        parameters['Pin Count'] = parameters['Pin Count'].slice(0, -7);
+      }
 
       console.log(parameters);
 
       IntLibJSON['Parameters'] = parameters;
-
-      // Write the JSON to a file
-      //fs.writeFileSync("./output.json", JSON.stringify(IntLibJSON, null, 2));
+      console.log(IntLibJSON);
     });
+
+    /*const pcblibStream = doc.storage('PCBLib').stream('0.pcblib');
+    pcblibStream.on('data', function(chunk) { chunks.push(chunk); });
+    pcblibStream.on('error', function(error) { console.error(error); });
+  
+    pcblibStream.on('end', function() {
+      const buffer = Buffer.concat(chunks);
+
+      // Remove null bytes from the buffer
+      const cleanBuffer = buffer.filter(byte => byte !== 0);
+
+      cleanBuffer.toString().forEach(line => {
+        const lineDict = line.split('=');
+        pcblib[lineDict[0]] = lineDict[1];
+      });
+
+      //console.log(pcblib);
+    });*/
   });
 
   doc.read();

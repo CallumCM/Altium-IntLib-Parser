@@ -1,11 +1,12 @@
 {
   "compilerOptions": {                        
-    "target": "es2022",                               
-    "module": "commonjs",                           
-    "outDir": "./dist",                             
-    "rootDir": "./src",                             
+    "target": "es2022",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "moduleResolution": "node",
-    "esModuleInterop": true,                       
+    "strict": false,
+    "esModuleInterop": true,
   },
   "exclude":[
     "./node_modules"
