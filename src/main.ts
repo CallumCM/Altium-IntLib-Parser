@@ -64,7 +64,7 @@ export async function readIntLib(IntLibPath: string): Promise<any> {
       const doc = new OleDoc(IntLibPath);
     
       doc.on("error", (err) => {
-        reject(err);
+        throw err;
       });
     
       doc.on("ready", async () => {
@@ -76,22 +76,32 @@ export async function readIntLib(IntLibPath: string): Promise<any> {
         // Remove null bytes from the buffer
         const cleanMetadata = metadata.filter(byte => byte !== 0);
   
+        const HEIGHT_REGEX = /.Height=(\d+\.?\d*)/g;
+
         // First two characters are not important
         // and Pad Count is repeated at the end of the string, so we can slice it off
-        const groupedParams = cleanMetadata.toString().slice(2).split('|').slice(0, -1);
-  
+        // Remove the Height parameter from the string because we'll deal with that separately
+        const groupedParams = cleanMetadata.toString()
+        .replaceAll(HEIGHT_REGEX, '')
+        .slice(2).split('|').slice(0, -1);
+
+        // Pin/Pad Count Height parameter is formatted differently than the other parameters
+        // so we need to split it using Regex
+        const heights = HEIGHT_REGEX.exec(cleanMetadata.toString()).map(height => {
+          const rawHeight = height.split('=').at(-1);
+          if (rawHeight.includes('|')) {
+            return rawHeight.slice(0, -1);
+          } else {
+            return rawHeight;
+          }
+        })
+
+
         for (let i = 0; i < groupedParams.length; i++) {
           const parameterDict = groupedParams[i].split('=');
           
-          if (parameterDict[0] === 'Pin Count' || parameterDict[0] === 'Pad Count') {
-  
-            // Pin Count and Pad Count will be "Pad Count=15Height=0"
-            // We need to split the string into two parts
-            const countAndHeight = [parameterDict[1].split('')[0], parameterDict[2]];
-    
-            // Pin Count or Pad Count
-            const name = parameterDict[0]
-  
+          if (parameterDict[0] === 'Pin Count' && heights.length > 0) {
+
             /*
               {
                 "Pin Count": {
@@ -100,11 +110,15 @@ export async function readIntLib(IntLibPath: string): Promise<any> {
                 }
               }
             */
-            parameters[name] = {
-              [name]: countAndHeight[0],
-              'Height': countAndHeight[1]
+            parameters['Pin Count'] = {
+              'Pin Count': parameterDict[1],
+              'Height': heights[0]
             };
-  
+          } else if (parameterDict[0] === 'Pad Count' && heights.length > 1) {
+            parameters['Pad Count'] = {
+              'Pad Count': parameterDict[1],
+              'Height': heights[1]
+            };
           } else {
             parameters[parameterDict[0]] = parameterDict[1];
           }
@@ -122,6 +136,18 @@ export async function readIntLib(IntLibPath: string): Promise<any> {
   });
 }
 
-readIntLib("./example3.IntLib").then((result) => {
-  console.log(result);
-}).catch((err) => { console.error(err); });
+// Loop through every file in the ./examples directory and read the IntLib
+fs.readdir('./examples', async (err, files) => {
+  if (err) {
+    throw err;
+  }
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+
+    if (!fs.lstatSync(`./examples/${file}`).isDirectory()) {
+      const IntLib = await readIntLib(`./examples/${file}`);
+      console.log(IntLib);
+    }
+  }
+});
