@@ -6,9 +6,9 @@ const OleDoc = require('ole-doc').OleCompoundDoc;
 
 interface IntLibFile {
   Parameters: object;
+  RawParameters: string;
   PCBLib: Buffer;
-  SCHLib: Buffer;
-  Model: Buffer;
+  SchLib: Buffer;
 }
 
 async function readFileFromOLE(filepath: string, oledoc): Promise<Buffer> {
@@ -55,7 +55,7 @@ async function readFileFromOLE(filepath: string, oledoc): Promise<Buffer> {
   });
 }
 
-export async function readIntLib(IntLibPath: string): Promise<any> {
+export async function readIntLib(IntLibPath: string): Promise<IntLibFile> {
   return new Promise((resolve, reject) => {
     
     // The first 8 bytes contain the Compound Document identifier
