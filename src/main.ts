@@ -14,6 +14,10 @@ interface IntLibFile {
 async function readFileFromOLE(filepath: string, oledoc): Promise<Buffer> {
   return new Promise((resolve, reject) => {
 
+    if (filepath.split('/').length < 2) {
+      throw new Error('Invalid filepath');
+    }
+
     // Filepath will be something like '/PCBLib/0.pcblib'
     // Split the filepath into storage(s) and a stream
     const fileArray = filepath.split('/');
@@ -126,8 +130,9 @@ export async function readIntLib(IntLibPath: string): Promise<any> {
 
         resolve({
           "Parameters": parameters,
+          "RawParameters": metadata.toString(),
           "PCBLib": await readFileFromOLE('/PCBLib/0.pcblib', doc),
-          "SCHLib": await readFileFromOLE('/SchLib/0.schlib', doc)
+          "SchLib": await readFileFromOLE('/SchLib/0.schlib', doc)
         });
       });
     
@@ -135,19 +140,3 @@ export async function readIntLib(IntLibPath: string): Promise<any> {
     }
   });
 }
-
-// Loop through every file in the ./examples directory and read the IntLib
-fs.readdir('./examples', async (err, files) => {
-  if (err) {
-    throw err;
-  }
-
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-
-    if (!fs.lstatSync(`./examples/${file}`).isDirectory()) {
-      const IntLib = await readIntLib(`./examples/${file}`);
-      console.log(IntLib);
-    }
-  }
-});
