@@ -11,7 +11,7 @@ interface IntLibFile {
   SchLib: Buffer;
 }
 
-async function readFileFromOLE(filepath: string, oledoc): Promise<Buffer> {
+export async function readFileFromOLE(filepath: string, oledoc): Promise<Buffer> {
   return new Promise((resolve, reject) => {
 
     if (filepath.split('/').length < 2) {
