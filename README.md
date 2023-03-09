@@ -6,7 +6,7 @@
 - `npm test` will run through each .IntLib file, and use a pre-extracted version from 7zip to compare data
 - The `readIntLib()` function returns `Parameters` and `RawParameters`. `RawParameters` is for testing, and contains the raw contents of Parameters.bin, whereas Parameters contains a JSON representation of Parameters.bin
 
-#readIntLib()
+# readIntLib()
 Returns an object that resembles this: ```json
 {
     "Parameters": parameters,
