@@ -8,7 +8,7 @@
 
 # readIntLib()
 Returns an object that resembles this:
-```json
+```
 {
     "Parameters": {
       "Availability": "Unavailable",
@@ -29,7 +29,7 @@ Returns an object that resembles this:
       "Height": 0,
       "Pad Count": "57"
     },
-    "RawParameters": "",
+    "RawParameters": "   Availability=In Stock|Check_prices=https://www.snapeda.com/parts/1N4148/Onsemi/view-part/?ref=eda|Comment=*|Component Kind=Standard|Description=Diode Standard 75V 200mA Surface Mount SOD-523F|Footprint=DIOAD829W49L456D191|Library Reference=1N4148|MF=ON Semiconductor|MP=1N4148|Package=AXIAL LEAD-2 ON Semiconductor|Price=None|Purchase-URL=https://pricing.snapeda.com/search/part/1N4148/?ref=eda|SnapEDA_Link=https://www.snapeda.com/parts/1N4148/Onsemi/view-part/?ref=snap|Value=*|Designator=1N4148|Component Type=Standard|Pin Count=2    Height=0|Pad Count=2    Height=0|Pad Count=2 ",
     "PCBLib": [bytes],
     "SchLib": [bytes]
 }
